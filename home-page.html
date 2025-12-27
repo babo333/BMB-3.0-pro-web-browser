@@ -1,0 +1,196 @@
+
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<title>BMB Web Homepage</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    font-family: Segoe UI, Tahoma, sans-serif;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+}
+
+.header-info {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    font-size: 0.8em;
+    color: #555;
+}
+
+.header-info img {
+    width: 80px;
+    display: block;
+    margin-top: 5px;
+}
+
+#bmb-logo {
+    width: 260px;
+    margin-top: 120px;
+    margin-bottom: 30px;
+}
+
+.search-container {
+    width: 80%;
+    max-width: 600px;
+    display: flex;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,.1);
+}
+
+#search-input {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    font-size: 1.1em;
+    outline: none;
+}
+
+#search-button {
+    padding: 15px 20px;
+    background: #1a73e8;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.quick-links {
+    display: flex;
+    gap: 20px;
+    margin-top: 35px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.tile {
+    width: 90px;
+    height: 90px;
+    background: #f1f3f4;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.tile:hover {
+    background: #e8eaed;
+    transform: translateY(-3px);
+}
+
+.tile img {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 6px;
+}
+
+.tile span {
+    font-size: .8em;
+}
+
+.add {
+    font-size: 32px;
+    color: #5f6368;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header-info">
+    Make by:
+    <img src="babo logo.png">
+</div>
+
+<img src="logo.png" id="bmb-logo">
+
+<div class="search-container">
+    <input id="search-input" placeholder="Search Google or type URL"
+           onkeypress="if(event.key==='Enter') search()">
+    <button id="search-button" onclick="search()">Search</button>
+</div>
+
+<div class="quick-links" id="links"></div>
+
+<!-- <script>
+function search() {
+    let q = searchInput.value.trim();
+    if(q) location.href = "https://www.google.com/search?q=" + encodeURIComponent(q);
+} -->
+
+<script>
+function search() {
+    let input = document.getElementById("search-input");
+    let q = input.value.trim();
+
+    if (!q) return;
+
+    // daca e URL, mergem direct
+    if (q.includes(".") && !q.includes(" ")) {
+        if (!q.startsWith("http")) q = "https://" + q;
+        location.href = q;
+    } else {
+        location.href = "https://www.google.com/search?q=" + encodeURIComponent(q);
+    }
+}
+
+
+function loadLinks() {
+    let links = JSON.parse(localStorage.getItem("bmb_links") || "[]");
+    links.forEach(addTile);
+    addAddButton();
+}
+
+function addAddButton() {
+    let btn = document.createElement("div");
+    btn.className = "tile add";
+    btn.innerHTML = "+";
+    btn.onclick = addLink;
+    links.appendChild(btn);
+}
+
+function addTile(link) {
+    let tile = document.createElement("div");
+    tile.className = "tile";
+    tile.onclick = () => location.href = link.url;
+
+    let img = document.createElement("img");
+    img.src = "https://www.google.com/s2/favicons?domain=" + link.url + "&sz=64";
+
+    let span = document.createElement("span");
+    span.textContent = link.name;
+
+    tile.append(img, span);
+    links.appendChild(tile);
+}
+
+function addLink() {
+    let name = prompt("Name:");
+    if(!name) return;
+
+    let url = prompt("URL:");
+    if(!url) return;
+
+    if(!url.startsWith("http")) url = "https://" + url;
+
+    let linksData = JSON.parse(localStorage.getItem("bmb_links") || "[]");
+    linksData.push({name, url});
+    localStorage.setItem("bmb_links", JSON.stringify(linksData));
+
+    location.reload();
+}
+
+loadLinks();
+</script>
+
+</body>
+</html>
